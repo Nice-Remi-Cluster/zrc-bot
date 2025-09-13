@@ -760,21 +760,6 @@ wheels = [
 ]
 
 [[package]]
-name = "nonebot-plugin-llm-helper"
-version = "0.0.4"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "httpx" },
-    { name = "nonebot-plugin-alconna" },
-    { name = "nonebot-plugin-localstore" },
-    { name = "nonebot2" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/d2/f4/a57c67a482c45056a98ed234761e38274a32f5839dc6e341c72c7d51455c/nonebot_plugin_llm_helper-0.0.4.tar.gz", hash = "sha256:d8aef4c47f8f0f2d0bf69171086439e2461cc074ac4cd030613919f66c651c1c", size = 20822, upload-time = "2025-07-20T04:33:09.207Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/3d/e2/fa95f54e5afbb48fe663782e08aa6a41f89c1244c81cdba86f9a9979c13d/nonebot_plugin_llm_helper-0.0.4-py3-none-any.whl", hash = "sha256:d24bd6accebadeed5484a8218302a9699d8aeb7c98c17fa8ab59196e1c46096d", size = 23959, upload-time = "2025-07-20T04:33:07.489Z" },
-]
-
-[[package]]
 name = "nonebot-plugin-localstore"
 version = "0.7.4"
 source = { registry = "https://pypi.org/simple" }
@@ -1658,7 +1643,6 @@ dependencies = [
     { name = "nonebot-adapter-onebot" },
     { name = "nonebot-plugin-alconna" },
     { name = "nonebot-plugin-htmlrender" },
-    { name = "nonebot-plugin-llm-helper" },
     { name = "nonebot-plugin-localstore" },
     { name = "nonebot-plugin-orm" },
     { name = "nonebot-plugin-waiter" },
@@ -1748,7 +1732,6 @@ requires-dist = [
     { name = "nonebot-adapter-onebot", specifier = "==2.4.6" },
     { name = "nonebot-plugin-alconna", specifier = "==0.59.4" },
     { name = "nonebot-plugin-htmlrender", specifier = "==0.6.6" },
-    { name = "nonebot-plugin-llm-helper", specifier = ">=0.0.4" },
     { name = "nonebot-plugin-localstore", specifier = "==0.7.4" },
     { name = "nonebot-plugin-orm", specifier = "==0.8.2" },
     { name = "nonebot-plugin-waiter", specifier = "==0.8.1" },
