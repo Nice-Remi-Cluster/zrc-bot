@@ -52,7 +52,7 @@ dependencies = [
     "nonebot-plugin-alconna==0.59.4",
     "nonebot-plugin-htmlrender==0.6.6",
     "nonebot-plugin-localstore==0.7.4",
-    "nonebot-plugin-mai-arcade>=0.1.5.7.5",
+    "nonebot-plugin-mai-arcade",
     "nonebot-plugin-orm==0.8.2",
     "nonebot-plugin-waiter==0.8.1",
     "nonebot2==2.4.3",
@@ -105,7 +105,7 @@ plugins = [
     "nonebot_plugin_localstore",
     "nonebot_plugin_alconna",
     "nonebot_plugin_htmlrender",
-    "nonebot-plugin-mai-arcade"
+    "nonebot_plugin_mai_arcade"
 ]
 plugin_dirs = ["src/plugins"]
 builtin_plugins = []
@@ -119,3 +119,4 @@ asyncio_default_fixture_loop_scope = "session"
 
 [tool.uv.sources]
 wahlap-mai-ass-expander = { git = "ssh://git@github.com/Nice-Remi-Cluster/Wahlap-Mai-Ass-Expander.git" }
+nonebot-plugin-mai-arcade = { git = "ssh://git@github.com/Adsicmes/nonebot_plugin_mai_arcade.git" }

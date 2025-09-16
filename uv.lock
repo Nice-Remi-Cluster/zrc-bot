@@ -848,16 +848,12 @@ wheels = [
 [[package]]
 name = "nonebot-plugin-mai-arcade"
 version = "0.1.5.7.5"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "ssh://git@github.com/Adsicmes/nonebot_plugin_mai_arcade.git#73f8e525e10d9a504d700b46af46afb38c9f2254" }
 dependencies = [
     { name = "nonebot-adapter-onebot" },
     { name = "nonebot-plugin-apscheduler" },
     { name = "nonebot-plugin-localstore" },
     { name = "nonebot2" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/f7/ab/dd2bd3205ed2c7ec69cfc9d91329c04f0658a046a5d6a82c88fbba6082c1/nonebot_plugin_mai_arcade-0.1.5.7.5.tar.gz", hash = "sha256:3b93f0c88af24a6d6fef48767f1b5aaa62e197eb2884c8d8a6d990e696e02b84", size = 11653, upload-time = "2024-10-27T19:05:56.029Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b7/89/ff8089d2bc15a8ecf377011e11d5bf6eee1ba4340f8c42708270355158f0/nonebot_plugin_mai_arcade-0.1.5.7.5-py3-none-any.whl", hash = "sha256:425d06dc03877d50d3ee8bcf34ab76a73eace5b078dd588c2e4b5e20d7a4daa8", size = 10075, upload-time = "2024-10-27T19:05:54.445Z" },
 ]
 
 [[package]]
@@ -1866,7 +1862,7 @@ requires-dist = [
     { name = "nonebot-plugin-alconna", specifier = "==0.59.4" },
     { name = "nonebot-plugin-htmlrender", specifier = "==0.6.6" },
     { name = "nonebot-plugin-localstore", specifier = "==0.7.4" },
-    { name = "nonebot-plugin-mai-arcade", specifier = ">=0.1.5.7.5" },
+    { name = "nonebot-plugin-mai-arcade", git = "ssh://git@github.com/Adsicmes/nonebot_plugin_mai_arcade.git" },
     { name = "nonebot-plugin-orm", specifier = "==0.8.2" },
     { name = "nonebot-plugin-waiter", specifier = "==0.8.1" },
     { name = "nonebot2", specifier = "==2.4.3" },
