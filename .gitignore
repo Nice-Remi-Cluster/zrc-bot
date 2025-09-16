@@ -145,3 +145,6 @@ archive/
 data/
 .idea/
 test.py
+
+# iFlow CLI context file
+IFLOW.md
