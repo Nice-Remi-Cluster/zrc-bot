@@ -35,13 +35,16 @@ dependencies = [
     "iniconfig==2.1.0",
     "jaconv==0.4.0",
     "jinja2==3.1.6",
+    "linkify-it-py>=2.0.3",
     "loguru==0.7.3",
     "lxml==5.4.0",
     "maimai-ffi==0.6.0",
     "maimai-py==1.3.5",
     "mako==1.3.10",
     "markdown==3.8.2",
+    "markdown-it-py>=4.0.0",
     "markupsafe==3.0.2",
+    "mdit-py-plugins>=0.5.0",
     "msgpack==1.1.1",
     "multidict==6.6.4",
     "nepattern==0.7.7",
@@ -113,4 +116,4 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
 
 [tool.uv.sources]
-wahlap-mai-ass-expander = { git = "ssh://git@github.com/Nice-Remi-Cluster/Wahlap-Mai-Ass-Expander.git", rev = "494b97fcc33dcb58eb7772664ab811ed05017bed" }
+wahlap-mai-ass-expander = { git = "ssh://git@github.com/Nice-Remi-Cluster/Wahlap-Mai-Ass-Expander.git" }

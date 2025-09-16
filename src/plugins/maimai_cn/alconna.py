@@ -133,9 +133,3 @@ maimai_cn_alc.shortcut(
 maimai_cn_alc.shortcut(
     rf"{alc_header_cn}切换首选 (\S+)", {"command": "/maimai_cn set_primary {0}"}
 )
-maimai_cn_alc.shortcut(
-    rf"{alc_header_cn}切到 (\S+)", {"command": "/maimai_cn set_primary {0}"}
-)
-maimai_cn_alc.shortcut(
-    rf"{alc_header_cn}使用 (\S+)", {"command": "/maimai_cn set_primary {0}"}
-)
