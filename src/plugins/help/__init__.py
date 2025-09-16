@@ -148,7 +148,7 @@ async def handle_help(event: MessageEvent, arp: CommandResult):
     if not options:
         await help_cmd.finish(
             "哎哟，不问问题我怎么回答你呢。试着在help后跟着要问的问题吧。\n"
-            "----------"
+            "----------\n"
             "前往文档站（ai调优）: http://zrc-bot.pandawiki.frzmeow.cc/\n"
             "简单询问ai: /help b50怎么查\n"
             "两者使用的ai不同，文档站的更好"
