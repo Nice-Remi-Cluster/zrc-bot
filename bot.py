@@ -1,6 +1,15 @@
 import nonebot
 from nonebot.adapters.onebot.v11 import Adapter as ONEBOT_V11Adapter
+from nonebot import logger
 
+logger.add(
+    "logs/bot_{time:YYYY-MM-DD}.log",
+    rotation="00:00",
+    retention="30 days",
+    level="INFO",
+    format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function}:{line} - {message}",
+    compression="zip",
+)
 
 
 nonebot.init()
