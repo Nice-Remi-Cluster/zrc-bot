@@ -1526,7 +1526,7 @@ wheels = [
 [[package]]
 name = "wahlap-mai-ass-expander"
 version = "0.1.4"
-source = { git = "ssh://git@github.com/Nice-Remi-Cluster/Wahlap-Mai-Ass-Expander.git#fd0b0fecf71781fd810990bd84848b577e0e8cc6" }
+source = { git = "ssh://git@github.com/Nice-Remi-Cluster/Wahlap-Mai-Ass-Expander.git#b2e18f8dc7f6be24226b78511a322db3333149ff" }
 dependencies = [
     { name = "httpx" },
     { name = "maimai-py" },
