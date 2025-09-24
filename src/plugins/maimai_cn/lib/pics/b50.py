@@ -6,6 +6,7 @@ from pathlib import Path
 import os
 from loguru import logger
 import cloudscraper
+import httpx
 from nonebot.matcher import Matcher
 from .lib import env
 from maimai_py import MaimaiScores
@@ -217,17 +218,45 @@ def _get_rate_icon(rate_name: str) -> str:
 
 
 # QQ头像获取函数
-def _get_qq_avatar(qq_id: str) -> str:
-    """根据QQ号获取头像路径，如果存在本地缓存则返回路径"""
+async def _get_qq_avatar(qq_id: str) -> str:
+    """根据QQ号获取头像，先检查本地缓存，如果不存在则从腾讯API下载"""
     if not qq_id:
         return ""
     
     avatar_path = f"mai/avatar/{qq_id}.jpg"
     full_path = f"resources/mai/{avatar_path}"
     
+    # 如果本地缓存存在，直接返回
     if os.path.exists(full_path):
         return avatar_path
-    return ""
+    
+    # 本地缓存不存在，从腾讯API下载
+    try:
+        # 确保目录存在
+        os.makedirs(os.path.dirname(full_path), exist_ok=True)
+        
+        # 构建请求参数
+        params = {
+            'b': 'qq',
+            'nk': qq_id,
+            's': 100
+        }
+        
+        # 发起GET请求获取头像
+        async with httpx.AsyncClient() as client:
+            response = await client.get('http://q1.qlogo.cn/g', params=params)
+            response.raise_for_status()
+            
+            # 保存头像到本地
+            with open(full_path, 'wb') as f:
+                f.write(response.content)
+            
+            logger.info(f"QQ头像下载成功: {qq_id}")
+            return avatar_path
+            
+    except Exception as e:
+        logger.warning(f"QQ头像下载失败 | QQ号: {qq_id} | 错误: {e}")
+        return ""
 
 
 async def gen_b50(username: str, scores: MaimaiScores, matcher: Matcher, qq_id: str = "", custom_plate: str = "") -> bytes:
@@ -292,7 +321,7 @@ async def gen_b50(username: str, scores: MaimaiScores, matcher: Matcher, qq_id: 
         
         # 检查自定义图片
         custom_plate_path = _check_custom_plate(custom_plate)
-        qq_avatar_path = _get_qq_avatar(qq_id)
+        qq_avatar_path = await _get_qq_avatar(qq_id)
         
         # 构建标准歌曲数据
         standard_songs = []
