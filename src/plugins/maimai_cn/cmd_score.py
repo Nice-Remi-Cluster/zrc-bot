@@ -350,7 +350,7 @@ async def b50(
             user_name = "未知用户"
 
         ht = await gen_b50(
-            user_name, b50_data, maimai_cn_matcher, qq_id=event.sender.user_id
+            user_name, b50_data, maimai_cn_matcher, qq_id=str(event.sender.user_id)
         )
         result_msg.append(OnebotV11MessageSegment.image(ht))
 

@@ -174,8 +174,8 @@ def _get_total_notes(difficulty: SongDifficulty) -> int:
 # 版本图标映射
 def _get_version_icon(song_type: SongType) -> str:
     """根据歌曲类型返回版本图标"""
-    type_str = song_type.value.upper()
-    return f"mai/pic/{type_str}.png" if type_str in ["DX", "SD"] else "mai/pic/DX.png"
+    file_str = "SD" if song_type == SongType.STANDARD else "DX"
+    return f"mai/pic/{file_str}.png"
 
 
 # 自定义名牌检查函数
@@ -343,7 +343,7 @@ async def gen_b50(username: str, scores: MaimaiScores, matcher: Matcher, qq_id: 
             fs_icon = _get_fs_icon(score.fs.name) if score.fs else ""
             
             # 获取版本图标
-            version_icon = _get_version_icon(difficulty.type.value)
+            version_icon = _get_version_icon(difficulty.type)
             
             song_data = {
                 "song_id": song.get_divingfish_id(difficulty.type, difficulty.level_index),
@@ -400,20 +400,15 @@ async def gen_b50(username: str, scores: MaimaiScores, matcher: Matcher, qq_id: 
             
             # 获取版本图标
             # Song对象可能没有type属性，使用默认值
-            song_type = getattr(song, 'type', None)
-            if song_type:
-                song_type_str = song_type.name if hasattr(song_type, 'name') else str(song_type)
-            else:
-                song_type_str = "DX"  # 默认值
-            version_icon = _get_version_icon(song_type_str)
+            version_icon = _get_version_icon(difficulty.type)
             
             song_data = {
-                "song_id": song.id,
+                "song_id": song.get_divingfish_id(difficulty.type, difficulty.level_index),
                 "level": score.level,
                 "level_index": score.level_index.value if hasattr(score.level_index, 'value') else 0,
                 "jacket_url": f"mai/cover/{song.id}.png",
                 "song_name": song.title,
-                "type": song_type_str,
+                "type": difficulty.type.value,
                 "version_icon": version_icon,
                 "dx_score": dx_score,
                 "total_notes": total_notes,
