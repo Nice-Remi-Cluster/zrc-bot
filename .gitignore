@@ -119,7 +119,7 @@ dmypy.json
 
 # End of https://www.toptal.com/developers/gitignore/api/python
 
-resources/
+resources/mai/mai/
 archive/
 data/
 .idea/
@@ -127,3 +127,4 @@ test.py
 
 # iFlow CLI context file
 IFLOW.md
+.qoder/
