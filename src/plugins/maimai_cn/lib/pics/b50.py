@@ -191,6 +191,31 @@ def _check_custom_plate(plate_name: str) -> str:
     return ""
 
 
+# 评级图标路径转换函数
+def _get_rate_icon(rate_name: str) -> str:
+    """将评级名称转换为正确的文件路径格式"""
+    # 评级名称映射：将大写P转换为小写p
+    rate_mapping = {
+        "SSSP": "SSSp",
+        "SSS": "SSS",
+        "SSP": "SSp", 
+        "SS": "SS",
+        "SP": "Sp",
+        "S": "S",
+        "AAA": "AAA",
+        "AA": "AA",
+        "A": "A",
+        "BBB": "BBB",
+        "BB": "BB",
+        "B": "B",
+        "C": "C",
+        "D": "D"
+    }
+    
+    corrected_name = rate_mapping.get(rate_name, rate_name)
+    return f"mai/pic/UI_TTR_Rank_{corrected_name}.png"
+
+
 # QQ头像获取函数
 def _get_qq_avatar(qq_id: str) -> str:
     """根据QQ号获取头像路径，如果存在本地缓存则返回路径"""
@@ -311,7 +336,7 @@ async def gen_b50(username: str, scores: MaimaiScores, matcher: Matcher, qq_id: 
                 "fs": bool(score.fs),
                 "fs_type": score.fs.name if score.fs else "",
                 "fs_icon": fs_icon,
-                "rate_icon": f"mai/pic/UI_TTR_Rank_{score.rate.name}.png",
+                "rate_icon": _get_rate_icon(score.rate.name),
                 "rate": score.rate.name,
                 "achievements": f"{score.achievements:.4f}",
                 "difficulty_bg": colors["bg_image"],
@@ -373,7 +398,7 @@ async def gen_b50(username: str, scores: MaimaiScores, matcher: Matcher, qq_id: 
                 "fs": bool(score.fs),
                 "fs_type": score.fs.name if score.fs else "",
                 "fs_icon": fs_icon,
-                "rate_icon": f"mai/pic/UI_TTR_Rank_{score.rate.name}.png",
+                "rate_icon": _get_rate_icon(score.rate.name),
                 "rate": score.rate.name,
                 "achievements": f"{score.achievements:.4f}",
                 "difficulty_bg": colors["bg_image"],
@@ -385,7 +410,7 @@ async def gen_b50(username: str, scores: MaimaiScores, matcher: Matcher, qq_id: 
 
         data = {
             # 用户基本信息
-            "plateAsset": "mai/pic/UI_Plate_300501.png",
+            "plateAsset": "mai/plate/舞舞舞.png",
             "plateCustom": custom_plate_path,  # 支持自定义名牌
             "iconAsset": "mai/pic/UI_Icon_309503.png",
             "qqAvatar": qq_avatar_path,  # 支持QQ头像
@@ -419,7 +444,7 @@ async def gen_b50(username: str, scores: MaimaiScores, matcher: Matcher, qq_id: 
      
         # 尝试使用简化数据生成错误报告
         error_data = {
-            "plateAsset": "mai/pic/UI_Plate_300501.png",
+            "plateAsset": "mai/plate/舞舞舞.png",
             "plateCustom": "",
             "iconAsset": "mai/pic/UI_Icon_309503.png",
             "qqAvatar": "",
