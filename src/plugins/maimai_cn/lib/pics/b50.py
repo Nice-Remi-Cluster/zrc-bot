@@ -9,7 +9,7 @@ import cloudscraper
 import httpx
 from nonebot.matcher import Matcher
 from .lib import env
-from maimai_py import MaimaiScores
+from maimai_py import MaimaiScores, SongType
 from nonebot import require
 
 require("nonebot_plugin_htmlrender")
@@ -172,9 +172,9 @@ def _get_total_notes(difficulty: SongDifficulty) -> int:
 
 
 # 版本图标映射
-def _get_version_icon(song_type) -> str:
+def _get_version_icon(song_type: SongType) -> str:
     """根据歌曲类型返回版本图标"""
-    type_str = str(song_type) if song_type else "DX"
+    type_str = song_type.value.upper()
     return f"mai/pic/{type_str}.png" if type_str in ["DX", "SD"] else "mai/pic/DX.png"
 
 
@@ -343,15 +343,15 @@ async def gen_b50(username: str, scores: MaimaiScores, matcher: Matcher, qq_id: 
             fs_icon = _get_fs_icon(score.fs.name) if score.fs else ""
             
             # 获取版本图标
-            version_icon = _get_version_icon(getattr(song, 'type', 'DX'))
+            version_icon = _get_version_icon(difficulty.type.value)
             
             song_data = {
-                "song_id": song.id,
+                "song_id": song.get_divingfish_id(difficulty.type, difficulty.level_index),
                 "level": score.level,
                 "level_index": score.level_index.value if hasattr(score.level_index, 'value') else 0,
                 "jacket_url": f"mai/cover/{song.id}.png",
                 "song_name": song.title,
-                "type": str(getattr(song, 'type', 'DX')),
+                "type": difficulty.type.value,
                 "version_icon": version_icon,
                 "dx_score": dx_score,
                 "total_notes": total_notes,
