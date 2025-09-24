@@ -1,0 +1,589 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>B50成绩单</title>
+    <style>
+        /* 字体注册 */
+        @font-face {
+            font-family: 'ResourceHanRoundedCN';
+            src: url('ResourceHanRoundedCN-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'ShangguMonoSC';
+            src: url('ShangguMonoSC-Regular.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Torus';
+            src: url('Torus SemiBold.otf') format('opentype');
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        /* 重置和基础设置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 禁用动画和过渡效果 */
+        *, *::before, *::after {
+            animation-duration: 0s !important;
+            animation-delay: 0s !important;
+            transition-duration: 0s !important;
+            transition-delay: 0s !important;
+        }
+
+        body {
+            font-family: "Torus", "Microsoft YaHei", "Hiragino Sans GB", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-weight: normal;
+            line-height: 1;
+            text-rendering: optimizeLegibility;
+            -webkit-text-stroke: 0.1px transparent;
+        }
+
+        .b50 {
+            width: 1400px;
+            height: 1600px;
+            background-color: white;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+
+        .b50_bg {
+            width: 1400px;
+            height: 1600px;
+            position: relative;
+        }
+
+        .chara-left {
+            width: 338px;
+            height: 351px;
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            z-index: 0;
+        }
+
+        .chara-right {
+            width: 283px;
+            height: 317px;
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            z-index: 0;
+        }
+
+        .logo {
+            width: 332px;
+            height: 160px;
+            position: absolute;
+            left: 50%;
+            bottom: 38px;
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+
+        .footer {
+            font-size: 24px;
+            line-height: 100%;
+            text-align: center;
+            color: black;
+            margin: 0;
+            font-family: "ResourceHanRoundedCN", "Torus", sans-serif;
+            position: absolute;
+            left: 50%;
+            bottom: 4px;
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+
+        /* B35和B15区域布局 */
+        .b35 {
+            width: 1374px;
+            height: 787px;
+            left: 13px;
+            top: 236px;
+            position: absolute;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 4px 10px;
+            z-index: 1;
+        }
+
+        .b15 {
+            width: 1374px;
+            height: 321px;
+            left: 13px;
+            top: 1083px;
+            position: absolute;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 4px 10px;
+            z-index: 1;
+        }
+
+        .song-card {
+            width: 264px;
+            height: 109px;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* 歌曲卡片内部元素定位 */
+        .song-jacket {
+            position: absolute;
+            width: 75px;
+            height: 75px;
+            left: 12px;
+            top: 12px;
+            border-radius: 4px;
+        }
+
+        .version-icon {
+            position: absolute;
+            width: 35px;
+            height: 13px;
+            left: 52px;
+            top: 91px;
+        }
+
+        .rate-icon {
+            position: absolute;
+            width: 51px;
+            height: 24px;
+            left: 96px;
+            top: 80px;
+        }
+
+        .fc-icon {
+            position: absolute;
+            width: 34px;
+            height: 34px;
+            left: 185px;
+            top: 77px;
+        }
+
+        .fs-icon {
+            position: absolute;
+            width: 34px;
+            height: 34px;
+            left: 154px;
+            top: 77px;
+        }
+
+        .dx-star-icon {
+            position: absolute;
+            width: 31px;
+            height: 19px;
+            left: 225px;
+            top: 83px;
+        }
+
+        .song-id {
+            position: absolute;
+            left: 12px;
+            top: 88px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 100%;
+            text-align: left;
+            color: black;
+            text-shadow: none;
+        }
+
+        .song-title {
+            position: absolute;
+            left: 94px;
+            top: 4px;
+            font-size: 16px;
+            line-height: 100%;
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: normal;
+            font-family: "ResourceHanRoundedCN", "Torus", sans-serif;
+        }
+
+        .song-achievement {
+            position: absolute;
+            left: 93px;
+            top: 24px;
+            font-size: 28px;
+            font-weight: 600;
+            line-height: 100%;
+        }
+
+        .song-dx-score {
+            position: absolute;
+            left: 191px;
+            top: 58px;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 100%;
+            text-align: left;
+        }
+
+        .song-rating {
+            position: absolute;
+            left: 96px;
+            top: 58px;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 100%;
+        }
+
+        /* 难度等级色彩系统 - 数字形式 */
+        .difficulty-0 {
+            background: url('mai/pic/b50_score_basic.png') no-repeat center center;
+            background-size: cover;
+        }
+        .difficulty-0 .song-title,
+        .difficulty-0 .song-achievement,
+        .difficulty-0 .song-rating,
+        .difficulty-0 .song-dx-score {
+            color: rgba(255, 255, 255, 1);
+        }
+
+        .difficulty-1 {
+            background: url('mai/pic/b50_score_advanced.png') no-repeat center center;
+            background-size: cover;
+        }
+        .difficulty-1 .song-title,
+        .difficulty-1 .song-achievement,
+        .difficulty-1 .song-rating,
+        .difficulty-1 .song-dx-score {
+            color: rgba(255, 255, 255, 1);
+        }
+
+        .difficulty-2 {
+            background: url('mai/pic/b50_score_expert.png') no-repeat center center;
+            background-size: cover;
+        }
+        .difficulty-2 .song-title,
+        .difficulty-2 .song-achievement,
+        .difficulty-2 .song-rating,
+        .difficulty-2 .song-dx-score {
+            color: rgba(255, 255, 255, 1);
+        }
+
+        .difficulty-3 {
+            background: url('mai/pic/b50_score_master.png') no-repeat center center;
+            background-size: cover;
+        }
+        .difficulty-3 .song-title,
+        .difficulty-3 .song-achievement,
+        .difficulty-3 .song-rating,
+        .difficulty-3 .song-dx-score {
+            color: rgba(255, 255, 255, 1);
+        }
+
+        .difficulty-4 {
+            background: url('mai/pic/b50_score_remaster.png') no-repeat center center;
+            background-size: cover;
+        }
+        .difficulty-4 .song-title,
+        .difficulty-4 .song-achievement,
+        .difficulty-4 .song-rating,
+        .difficulty-4 .song-dx-score {
+            color: rgba(138, 0, 226, 1);
+        }
+
+        /* 个人资料区域 */
+        .profile {
+            width: 880px;
+            height: 141.52px;
+            left: 260px;
+            top: 53px;
+            position: absolute;
+            z-index: 1;
+        }
+
+        .profile-bg {
+            width: 880px;
+            height: 141.52px;
+            position: relative;
+        }
+
+        .avatar {
+            width: 128px;
+            height: 128px;
+            left: 8px;
+            top: 7px;
+            position: absolute;
+        }
+
+        .shougou {
+            width: 272px;
+            height: 29px;
+            left: 151px;
+            top: 106px;
+            position: absolute;
+        }
+
+        .friend-battle {
+            width: 82px;
+            height: 49px;
+            left: 336px;
+            top: 1px;
+            position: absolute;
+        }
+
+        .name-section {
+            width: 272px;
+            height: 42px;
+            left: 151px;
+            top: 50px;
+            position: absolute;
+        }
+
+        .name-bg {
+            width: 272px;
+            height: 42px;
+            padding-left: 11px;
+            padding-right: 11px;
+            padding-top: 3px;
+            padding-bottom: 4px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .user-name {
+            font-size: 24px;
+            line-height: 100%;
+            color: black;
+            font-family: "ResourceHanRoundedCN", "Torus", sans-serif;
+        }
+
+        .name-spacer {
+            /* 移除注释，不再需要占位符 */
+        }
+
+        .dani-plate {
+            width: 73px;
+            height: 32px;
+        }
+
+        .rating-section {
+            width: 185px;
+            height: 36px;
+            left: 151px;
+            top: 7px;
+            position: absolute;
+        }
+
+        .rating-bg {
+            width: 185px;
+            height: 36px;
+            padding-top: 11px;
+            padding-bottom: 9px;
+            padding-left: 87px;
+            padding-right: 26px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+        }
+
+        .rating-digit {
+            width: 16px;
+            height: 17px;
+            margin-left: -1px;
+        }
+
+        .rating-digit-spacer {
+            width: 1px;
+        }
+
+        .rating-level-icon {
+            width: 186px;
+            height: 35px;
+            position: absolute;
+            left: 150px;
+            top: 10px;
+        }
+
+        .name-pic {
+            width: 272px;
+            height: auto;
+            position: absolute;
+            left: 151px;
+            top: 50px;
+        }
+    </style>
+</head> 
+
+<body>
+    <div class="b50">
+        <img class="b50_bg" src="{{ b50_bg }}" alt="Background">
+            <!-- 角色装饰元素 -->
+            <img class="chara-left" src="mai/pic/chara-left.png" alt="Left Character">
+            <img class="chara-right" src="mai/pic/chara-right.png" alt="Right Character">
+            
+            <!-- Logo和版权信息 -->
+            <img class="logo" src="{{ logo }}" alt="Logo">
+            <p class="footer">Powered by ZRC & Design from Yuri-YuzuChaN</p>
+            
+            <!-- 背景装饰元素 -->
+            <div class="bg">
+            </div>
+            
+            <!-- B35区域 -->
+            <div class="b35">
+                {% for song in standard %}
+                <div class="song-card difficulty-{{ song.level_index }}">
+                    <!-- 歌曲ID -->
+                    <div class="song-id">{{ song.song_id }}</div>
+                    
+                    <!-- 歌曲封面 -->
+                    <img class="song-jacket" src="{{ song.jacket_url }}" alt="{{ song.song_name }}">
+                    
+                    <!-- 版本图标 -->
+                    <img class="version-icon" src="{{ song.version_icon }}" alt="{{ song.type }}">
+                    
+                    <!-- 评级图标 -->
+                    <img class="rate-icon" src="{{ song.rate_icon }}" alt="{{ song.rate }}">
+                    
+                    <!-- FC图标 -->
+                    {% if song.fc and song.fc_icon %}
+                    <img class="fc-icon" src="{{ song.fc_icon }}" alt="{{ song.fc_type }}">
+                    {% endif %}
+                    
+                    <!-- FS图标 -->
+                    {% if song.fs and song.fs_icon %}
+                    <img class="fs-icon" src="{{ song.fs_icon }}" alt="{{ song.fs_type }}">
+                    {% endif %}
+                    
+                    <!-- DX星级图标 -->
+                    {% if song.dx_star_icon %}
+                    <img class="dx-star-icon" src="{{ song.dx_star_icon }}" alt="DX Star {{ song.dx_star_level }}">
+                    {% endif %}
+                    
+                    <!-- 歌曲名称 -->
+                    <div class="song-title">{{ song.song_name }}</div>
+                    
+                    <!-- 达成率 -->
+                    <div class="song-achievement">{{ song.achievements }}%</div>
+                    
+                    <!-- DX分数 -->
+                    <div class="song-dx-score">{{ song.dx_score }}/{{ song.total_notes * 3 }}</div>
+                    
+                    <!-- Rating -->
+                    <div class="song-rating">{{ song.level }} -> {{ song.dx_rating }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- B15区域 -->
+            <div class="b15">
+                {% for song in dx %}
+                <div class="song-card difficulty-{{ song.level_index }}">
+                    <!-- 歌曲ID -->
+                    <div class="song-id">{{ song.song_id }}</div>
+                    
+                    <!-- 歌曲封面 -->
+                    <img class="song-jacket" src="{{ song.jacket_url }}" alt="{{ song.song_name }}">
+                    
+                    <!-- 版本图标 -->
+                    <img class="version-icon" src="{{ song.version_icon }}" alt="{{ song.type }}">
+                    
+                    <!-- 评级图标 -->
+                    <img class="rate-icon" src="{{ song.rate_icon }}" alt="{{ song.rate }}">
+                    
+                    <!-- FC图标 -->
+                    {% if song.fc and song.fc_icon %}
+                    <img class="fc-icon" src="{{ song.fc_icon }}" alt="{{ song.fc_type }}">
+                    {% endif %}
+                    
+                    <!-- FS图标 -->
+                    {% if song.fs and song.fs_icon %}
+                    <img class="fs-icon" src="{{ song.fs_icon }}" alt="{{ song.fs_type }}">
+                    {% endif %}
+                    
+                    <!-- DX星级图标 -->
+                    {% if song.dx_star_icon %}
+                    <img class="dx-star-icon" src="{{ song.dx_star_icon }}" alt="DX Star {{ song.dx_star_level }}">
+                    {% endif %}
+                    
+                    <!-- 歌曲名称 -->
+                    <div class="song-title">{{ song.song_name }}</div>
+                    
+                    <!-- 达成率 -->
+                    <div class="song-achievement">{{ song.achievements }}%</div>
+                    
+                    <!-- DX分数 -->
+                    <div class="song-dx-score">{{ song.dx_score }}/{{ song.total_notes * 3 }}</div>
+                    
+                    <!-- Rating -->
+                    <div class="song-rating">{{ song.level }} -> {{ song.dx_rating }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- 个人资料区域 -->
+            <div class="profile">
+                <img class="profile-bg" src="{{ plateAsset }}" alt="Profile Background">
+                    <!-- 头像 -->
+                    {% if qqAvatar %}
+                    <img class="avatar" src="{{ qqAvatar }}" alt="Avatar">
+                    {% else %}
+                    <img class="avatar" src="{{ iconAsset }}" alt="Default Avatar">
+                    {% endif %}
+                    
+                    <!-- 称号背景 -->
+                    <img class="shougou" src="{{ shougou_bg }}" alt="Shougou">
+                    
+                    <!-- 友人对战 -->
+                    <img class="friend-battle" src="{{ class_level }}" alt="Friend Battle">
+                    
+                    <!-- 名字下方图片 -->
+                    <img class="name-pic" src="mai/pic/Name.png" alt="Name Picture">
+                    
+                    <!-- 名字区域 -->
+                    <div class="name-section">
+                        <div class="name-bg">
+                            <p class="user-name">{{ nickname }}</p>
+                            <div class="name-spacer"></div>
+                            <img class="dani-plate" src="{{ match_level }}" alt="Dani Plate">
+                        </div>
+                    </div>
+                    
+                    <!-- Rating等级图标 -->
+                    <img class="rating-level-icon" src="{{ rating_level }}" alt="Rating Level">
+                    
+                    <!-- Rating区域 -->
+                    <div class="rating-section">
+                        <div class="rating-bg">
+                            {% for digit in rating|string %}
+                            <img class="rating-digit" src="mai/pic/UI_NUM_Drating_{{ digit }}.png" alt="{{ digit }}">
+                            {% if not loop.last %}<div class="rating-digit-spacer"></div>{% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </img>
+            </div>
+        </img>          
+    </div>
+</body>
+</html>

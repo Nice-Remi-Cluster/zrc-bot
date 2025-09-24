@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>B50成绩单 - 开发版 (纯HTML预览)</title>
+    <style>
+        /* 重置和基础设置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 禁用动画和过渡效果 */
+        *, *::before, *::after {
+            animation-duration: 0s !important;
+            animation-delay: 0s !important;
+            transition-duration: 0s !important;
+            transition-delay: 0s !important;
+        }
+
+        body {
+            font-family: "Microsoft YaHei", "Hiragino Sans GB", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-weight: normal;
+            line-height: 1;
+            text-rendering: optimizeLegibility;
+            -webkit-text-stroke: 0.1px transparent;
+            background-color: #f0f0f0; /* 开发版背景色，便于查看边界 */
+        }
+
+        /* 开发版调试工具栏 */
+        .dev-toolbar {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 9999;
+            font-family: 'Courier New', monospace;
+        }
+
+        .dev-toolbar h4 {
+            margin-bottom: 8px;
+            color: #4CAF50;
+        }
+
+        .dev-toolbar button {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            margin: 2px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .dev-toolbar button:hover {
+            background: #1976D2;
+        }
+
+        .dev-info {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #555;
+            font-size: 10px;
+        }
+
+        /* 调试网格 */
+        .debug-grid {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: 
+                linear-gradient(rgba(255, 0, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: 1000;
+        }
+
+        .b50 {
+            width: 1400px;
+            height: 1600px;
+            background-color: white;
+            position: relative;
+            margin: 20px auto; /* 开发版居中显示 */
+            padding: 0;
+            border: 2px solid #ddd; /* 开发版边框 */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .b50_bg {
+            width: 1400px;
+            height: 1600px;
+            position: relative;
+        }
+
+        .bg {
+            width: 1400px;
+            height: 1588px;
+            left: 0px;
+            top: 0px;
+            position: absolute;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .chara-left {
+            width: 338px;
+            height: 351px;
+        }
+
+        .chara-right {
+            width: 283px;
+            height: 317px;
+        }
+
+        .logo {
+            width: 332px;
+            height: 160px;
+        }
+
+        .footer {
+            font-size: 24px;
+            line-height: 100%;
+            text-align: center;
+            color: black;
+            margin: 0;
+        }
+
+        .spacer-241 {
+            height: 241.67px;
+        }
+
+        /* 位置调试辅助线 */
+        .debug-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 500;
+        }
+
+        .debug-line-h {
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: rgba(0, 255, 0, 0.5);
+        }
+
+        .debug-line-v {
+            position: absolute;
+            height: 100%;
+            width: 1px;
+            background: rgba(0, 255, 0, 0.5);
+        }
+
+        /* B35和B15区域布局 */
+        .b35 {
+            width: 1374px;
+            height: 787px;
+            left: 13px;
+            top: 236px;
+            position: absolute;
+            display: inline-flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .b15 {
+            width: 1374px;
+            height: 321px;
+            left: 13px;
+            top: 1083px;
+            position: absolute;
+            display: inline-flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .song-spacer {
+            width: 10px;
+        }
+
+        .song-card {
+            width: 264px;
+            height: 109px;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* 开发版：歌曲卡片调试边框 */
+        .debug-borders .song-card {
+            border: 1px dashed rgba(255, 0, 0, 0.3);
+        }
+
+        /* 歌曲卡片内部元素定位 */
+        .song-jacket {
+            position: absolute;
+            width: 75px;
+            height: 75px;
+            left: 12px;
+            top: 12px;
+            border-radius: 4px;
+        }
+
+        .version-icon {
+            position: absolute;
+            width: 35px;
+            height: 13px;
+            left: 52px;
+            top: 91px;
+        }
+
+        .rate-icon {
+            position: absolute;
+            width: 51px;
+            height: 24px;
+            left: 96px;
+            top: 80px;
+        }
+
+        .fc-icon {
+            position: absolute;
+            width: 34px;
+            height: 34px;
+            left: 185px;
+            top: 77px;
+        }
+
+        .fs-icon {
+            position: absolute;
+            width: 34px;
+            height: 34px;
+            left: 154px;
+            top: 77px;
+        }
+
+        .dx-star-icon {
+            position: absolute;
+            width: 31px;
+            height: 19px;
+            left: 225px;
+            top: 83px;
+        }
+
+        .song-id {
+            position: absolute;
+            left: 12px;
+            top: 88px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 100%;
+            text-align: left;
+        }
+
+        .song-title {
+            position: absolute;
+            left: 94px;
+            top: 0px;
+            font-size: 16px;
+            line-height: 100%;
+            max-width: 120px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: normal;
+        }
+
+        .song-achievement {
+            position: absolute;
+            left: 93px;
+            top: 24px;
+            font-size: 28px;
+            font-weight: 600;
+            line-height: 100%;
+        }
+
+        .song-dx-score {
+            position: absolute;
+            left: 191px;
+            top: 58px;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 100%;
+            text-align: left;
+        }
+
+        .song-rating {
+            position: absolute;
+            left: 96px;
+            top: 58px;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 100%;
+        }
+
+        /* 难度等级色彩系统 */
+        .difficulty-basic {
+            background: url('mai/pic/b50_score_basic.png') no-repeat center center;
+            background-size: cover;
+        }
+        .difficulty-basic .song-title,
+        .difficulty-basic .song-achievement,
+        .difficulty-basic .song-rating,
+        .difficulty-basic .song-dx-score {
+            color: rgba(255, 255, 255, 1);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .difficulty-basic .song-id {
+            color: rgba(129, 217, 85, 1);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .difficulty-advanced {
+            background: url('mai/pic/b50_score_advanced.png') no-repeat center center;
+            background-size: cover;
+        }
+        .difficulty-advanced .song-title,
+        .difficulty-advanced .song-achievement,
+        .difficulty-advanced .song-rating,
+        .difficulty-advanced .song-dx-score {
+            color: rgba(255, 255, 255, 1);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .difficulty-advanced .song-id {
+            color: rgba(245, 189, 21, 1);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .difficulty-expert {
+            background: url('mai/pic/b50_score_expert.png') no-repeat center center;
+            background-size: cover;
+        }
+        .difficulty-expert .song-title,
+        .difficulty-expert .song-achievement,
+        .difficulty-expert .song-rating,
+        .difficulty-expert .song-dx-score {
+            color: rgba(255, 255, 255, 1);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .difficulty-expert .song-id {
+            color: rgba(255, 129, 141, 1);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .difficulty-master {
+            background: url('mai/pic/b50_score_master.png') no-repeat center center;
+            background-size: cover;
+        }
+        .difficulty-master .song-title,
+        .difficulty-master .song-achievement,
+        .difficulty-master .song-rating,
+        .difficulty-master .song-dx-score {
+            color: rgba(255, 255, 255, 1);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .difficulty-master .song-id {
+            color: rgba(159, 81, 220, 1);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .difficulty-remaster {
+            background: url('mai/pic/b50_score_remaster.png') no-repeat center center;
+            background-size: cover;
+        }
+        .difficulty-remaster .song-title,
+        .difficulty-remaster .song-achievement,
+        .difficulty-remaster .song-rating,
+        .difficulty-remaster .song-dx-score {
+            color: rgba(138, 0, 226, 1);
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+        }
+        .difficulty-remaster .song-id {
+            color: rgba(138, 0, 226, 1);
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+        }
+
+        /* 个人资料区域 */
+        .profile {
+            width: 880px;
+            height: 141.52px;
+            left: 260px;
+            top: 53px;
+            position: absolute;
+        }
+
+        .profile-bg {
+            width: 880px;
+            height: 141.52px;
+            position: relative;
+        }
+
+        .avatar {
+            width: 128px;
+            height: 128px;
+            left: 8px;
+            top: 7px;
+            position: absolute;
+        }
+
+        .shougou {
+            width: 272px;
+            height: 29px;
+            left: 151px;
+            top: 106px;
+            position: absolute;
+        }
+
+        .friend-battle {
+            width: 82px;
+            height: 49px;
+            left: 336px;
+            top: 1px;
+            position: absolute;
+        }
+
+        .name-section {
+            width: 272px;
+            height: 42px;
+            left: 151px;
+            top: 50px;
+            position: absolute;
+        }
+
+        .name-bg {
+            width: 272px;
+            height: 42px;
+            padding-left: 11px;
+            padding-right: 11px;
+            padding-top: 3px;
+            padding-bottom: 4px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+        }
+
+        .user-name {
+            font-size: 24px;
+            line-height: 100%;
+            color: black;
+        }
+
+        .name-spacer {
+            width: 140px;
+        }
+
+        .dani-plate {
+            width: 73px;
+            height: 32px;
+        }
+
+        .rating-section {
+            width: 185px;
+            height: 36px;
+            left: 151px;
+            top: 7px;
+            position: absolute;
+        }
+
+        .rating-bg {
+            width: 185px;
+            height: 36px;
+            padding-top: 11px;
+            padding-bottom: 9px;
+            padding-left: 87px;
+            padding-right: 26px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+        }
+
+        .rating-digit {
+            width: 14px;
+            height: 15px;
+        }
+
+        .rating-digit-spacer {
+            width: 1px;
+        }
+
+        /* 开发版：缺失资源占位符 */
+        .missing-resource {
+            background: linear-gradient(45deg, #ff9800 25%, transparent 25%), 
+                        linear-gradient(-45deg, #ff9800 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #ff9800 75%), 
+                        linear-gradient(-45deg, transparent 75%, #ff9800 75%);
+            background-size: 8px 8px;
+            background-position: 0 0, 0 4px, 4px -4px, -4px 0px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 开发版调试工具栏 -->
+    <div class="dev-toolbar">
+        <h4>🔧 开发调试工具</h4>
+        <button onclick="toggleGrid()">切换网格</button>
+        <button onclick="toggleBorders()">切换边框</button>
+        <button onclick="toggleOverlay()">切换辅助线</button>
+        <button onclick="fillTestData()">重新填充</button>
+        <button onclick="randomizeData()">随机数据</button>
+        <div class="dev-info">
+            <div>尺寸: 1400×1600px</div>
+            <div>版本: b50_dev.html</div>
+            <div>状态: 纯HTML预览</div>
+            <div>更新时间: 2025-01-21</div>
+        </div>
+    </div>
+
+    <!-- 调试网格 -->
+    <div class="debug-grid" id="debugGrid"></div>
+
+    <div class="b50" id="container">
+        <!-- 调试辅助线 -->
+        <div class="debug-overlay" id="debugOverlay">
+            <div class="debug-line-h" style="top: 236px;"></div>
+            <div class="debug-line-h" style="top: 1083px;"></div>
+            <div class="debug-line-v" style="left: 13px;"></div>
+            <div class="debug-line-v" style="left: 260px;"></div>
+        </div>
+
+        <img class="b50_bg" id="mainBg" src="mai/pic/b50_bg.png" alt="Background" onerror="this.style.display='none'">
+            <!-- 背景装饰元素 -->
+            <div class="bg" id="bgElements">
+                <img class="chara-left" id="charaLeft" src="mai/pic/chara_left.png" alt="Left Character" onerror="this.style.display='none'">
+                <div class="spacer-241"></div>
+                <img class="chara-right" id="charaRight" src="mai/pic/chara_right.png" alt="Right Character" onerror="this.style.display='none'">
+                <div class="spacer-241"></div>
+                <img class="logo" id="logoImg" src="mai/pic/logo.png" alt="Logo" onerror="this.style.display='none'">
+                <div class="spacer-241"></div>
+                <p class="footer">Powered by ZRC-Bot & maimai.py [DEV]</p>
+            </div>
+            
+            <!-- B35区域 -->
+            <div class="b35" id="b35Grid">
+                <!-- 将由JS填充 -->
+            </div>
+            
+            <!-- B15区域 -->
+            <div class="b15" id="b15Grid">
+                <!-- 将由JS填充 -->
+            </div>
+            
+            <!-- 个人资料区域 -->
+            <div class="profile" id="profileSection">
+                <img class="profile-bg" id="profileBg" src="mai/pic/UI_Plate_300501.png" alt="Profile Background" onerror="this.style.display='none'">
+                    <!-- 头像 -->
+                    <img class="avatar" id="avatarImg" src="" alt="Avatar">
+                    
+                    <!-- 称号背景 -->
+                    <img class="shougou" id="shougouImg" src="mai/pic/UI_CMN_Shougou_Rainbow.png" alt="Shougou" onerror="this.style.display='none'">
+                    
+                    <!-- 友人对战 -->
+                    <img class="friend-battle" id="friendBattleImg" src="mai/pic/UI_FBR_Class_00.png" alt="Friend Battle" onerror="this.style.display='none'">
+                    
+                    <!-- 名字区域 -->
+                    <div class="name-section" id="nameSection">
+                        <div class="name-bg" id="nameBg">
+                            <p class="user-name" id="userName2">测试用户</p>
+                            <div class="name-spacer"></div>
+                            <img class="dani-plate" id="daniPlate" src="mai/pic/UI_DNM_DaniPlate_00.png" alt="Dani Plate" onerror="this.style.display='none'">
+                        </div>
+                    </div>
+                    
+                    <!-- Rating区域 -->
+                    <div class="rating-section" id="ratingSection">
+                        <div class="rating-bg" id="ratingBg">
+                            <!-- 将由JS填充 -->
+                        </div>
+                    </div>
+                </img>
+            </div>
+        </img>
+    </div>
+
+    <script>
+        // 图片资源管理器
+        const ImageSources = {
+            // 固定UI图片 - 相对于b50_dev.html的路径
+            ui: {
+                // 头部固定元素
+                logo: 'mai/pic/logo.png',
+                plate: 'mai/pic/UI_Plate_300501.png',
+                shougou: 'mai/pic/UI_CMN_Shougou_Rainbow.png',
+                
+                // Rating等级图标
+                ratingLevel: 'mai/pic/UI_CMN_DXRating_05.png',
+                
+                // 段位和等级
+                matchLevel: 'mai/pic/UI_DNM_DaniPlate_00.png',
+                classLevel: 'mai/pic/UI_FBR_Class_00.png',
+                
+                // Rating数字 (0-9)
+                ratingDigit: (digit) => `mai/pic/UI_NUM_Drating_${digit}.png`,
+                
+                // 评级图标
+                rate: (rate) => `mai/pic/UI_TTR_Rank_${rate}.png`,
+                
+                // FC/FS图标
+                fc: (type) => `mai/pic/UI_MSS_MBase_Icon_${type}.png`,
+                fs: (type) => `mai/pic/UI_MSS_MBase_Icon_${type}.png`,
+                
+                // DX星级图标
+                dxStar: (level) => `mai/pic/UI_GAM_Gauge_DXScoreIcon_0${level}.png`,
+                
+                // 版本图标
+                version: (type) => `mai/pic/${type}.png`
+            },
+            
+            // 动态内容图片 - 使用占位图
+            placeholder: {
+                // 用户头像(动态内容)
+                avatar: () => PlaceholderImages.generate(128, 128, '9C27B0', 'ffffff', 'AVATAR'),
+                
+                // 歌曲封面(动态内容)
+                jacket: (songId) => {
+                    const colors = ['FF6B6B', '4ECDC4', '45B7D1', 'FFA07A', '98D8C8', 'F7DC6F'];
+                    const color = colors[songId % colors.length];
+                    return PlaceholderImages.generate(75, 75, color, 'ffffff', songId.toString());
+                }
+            }
+        };
+
+        // 占位图生成器
+        const PlaceholderImages = {
+            generate(width, height, bgColor, textColor, text) {
+                return `https://dummyimage.com/${width}x${height}/${bgColor}/${textColor}&text=${encodeURIComponent(text)}`;
+            }
+        };
+
+        // 开发版测试数据
+        const testData = {
+            rating: 14280,
+            nickname: "测试用户",
+            standard_total: 8000,
+            dx_total: 4000,
+            // 35首Standard歌曲测试数据
+            standard: Array.from({length: 35}, (_, i) => {
+                const difficultyIndex = i % 5;
+                return {
+                    song_id: 10000 + i,
+                    song_name: `测试歌曲 ${i + 1}`,
+                    level_index: difficultyIndex,
+                    level: `${10 + difficultyIndex + (Math.random() > 0.5 ? 0.5 : 0)}`,
+                    type: i % 2 === 0 ? 'DX' : 'SD',
+                    achievements: (95.0000 + (i * 0.1)).toFixed(4),
+                    dx_score: 2800 + (i * 10),
+                    total_notes: 800 + (i * 5),
+                    dx_rating: 280 + i,
+                    rate: ['SSSp', 'SSS', 'SS', 'S', 'AAA'][i % 5],
+                    fc: i % 3 === 0,
+                    fs: i % 4 === 0,
+                    dx_star_level: (i % 4) + 1
+                };
+            }),
+            // 15首DX歌曲测试数据
+            dx: Array.from({length: 15}, (_, i) => {
+                const difficultyIndex = i % 5;
+                return {
+                    song_id: 20000 + i,
+                    song_name: `DX测试 ${i + 1}`,
+                    level_index: difficultyIndex,
+                    level: `${12 + difficultyIndex + (Math.random() > 0.5 ? 0.5 : 0)}`,
+                    type: 'DX',
+                    achievements: (98.0000 + (i * 0.05)).toFixed(4),
+                    dx_score: 2900 + (i * 15),
+                    total_notes: 900 + (i * 8),
+                    dx_rating: 300 + i * 2,
+                    rate: ['SSSp', 'SSS', 'SS', 'S', 'AAA'][i % 5],
+                    fc: i % 2 === 0,
+                    fs: i % 3 === 0,
+                    dx_star_level: (i % 4) + 1
+                };
+            })
+        };
+
+        // 难度配色映射
+        const difficultyMap = ['basic', 'advanced', 'expert', 'master', 'remaster'];
+        
+        // 填充头像和背景元素
+        function fillProfileImages() {
+            // 动态内容图片 - 使用占位图
+            document.getElementById('avatarImg').src = ImageSources.placeholder.avatar();
+        }
+        
+        // Rating数字填充
+        function fillRatingDigits() {
+            const container = document.getElementById('ratingBg');
+            const rating = testData.rating.toString();
+            container.innerHTML = '';
+            
+            for (let i = 0; i < rating.length; i++) {
+                const digit = rating[i];
+                const img = document.createElement('img');
+                img.className = 'rating-digit';
+                img.src = ImageSources.ui.ratingDigit(digit);
+                img.alt = digit;
+                img.onerror = function() { this.style.display = 'none'; };
+                container.appendChild(img);
+                
+                if (i < rating.length - 1) {
+                    const spacer = document.createElement('div');
+                    spacer.className = 'rating-digit-spacer';
+                    container.appendChild(spacer);
+                }
+            }
+        }
+
+        // 创建歌曲卡片
+        function createSongCard(song, index) {
+            const difficulty = difficultyMap[song.level_index];
+            
+            // 计算总DX分数
+            const totalDxScore = song.total_notes * 3;
+            const dxScoreText = `${song.dx_score}/${totalDxScore}`;
+            
+            // 难度等级 -> Rating 格式
+            const ratingText = `${song.level} -> ${song.dx_rating}`;
+            
+            const cardDiv = document.createElement('div');
+            cardDiv.className = `song-card difficulty-${difficulty}`;
+            cardDiv.id = `card-${index}`;
+            
+            cardDiv.innerHTML = `
+                <!-- 歌曲ID -->
+                <div class="song-id">${song.song_id}</div>
+                
+                <!-- 歌曲封面 - 动态内容使用占位图 -->
+                <img class="song-jacket" src="${ImageSources.placeholder.jacket(song.song_id)}" alt="${song.song_name}">
+                
+                <!-- 版本图标 - 固定UI路径 -->
+                <img class="version-icon" src="${ImageSources.ui.version(song.type)}" alt="${song.type}" onerror="this.style.display='none'">
+                
+                <!-- 评级图标 - 固定UI路径 -->
+                <img class="rate-icon" src="${ImageSources.ui.rate(song.rate)}" alt="${song.rate}" onerror="this.style.display='none'">
+                
+                ${song.fc ? `<img class="fc-icon" src="${ImageSources.ui.fc('APp')}" alt="FC" onerror="this.style.display='none'">` : ''}
+                ${song.fs ? `<img class="fs-icon" src="${ImageSources.ui.fs('FSDp')}" alt="FS" onerror="this.style.display='none'">` : ''}
+                ${song.dx_star_level ? `<img class="dx-star-icon" src="${ImageSources.ui.dxStar(song.dx_star_level)}" alt="DX Star ${song.dx_star_level}" onerror="this.style.display='none'">` : ''}
+                
+                <!-- 歌曲名称 -->
+                <div class="song-title">${song.song_name}</div>
+                
+                <!-- 达成率 -->
+                <div class="song-achievement">${song.achievements}%</div>
+                
+                <!-- DX分数格式：当前/总分 -->
+                <div class="song-dx-score">${dxScoreText}</div>
+                
+                <!-- 雾度等级 -> Rating -->
+                <div class="song-rating">${ratingText}</div>
+            `;
+            
+            return cardDiv;
+        }
+
+        // 填充歌曲数据 - 使用新的flexbox布局
+        function fillSongData() {
+            // 填充B35区域
+            const b35Grid = document.getElementById('b35Grid');
+            b35Grid.innerHTML = '';
+            
+            testData.standard.forEach((song, index) => {
+                const cardElement = createSongCard(song, `std-${index}`);
+                b35Grid.appendChild(cardElement);
+                
+                // 添加间距（除了每行最后一个和最后一个卡片）
+                if ((index + 1) % 5 !== 0 && index < testData.standard.length - 1) {
+                    const spacer = document.createElement('div');
+                    spacer.className = 'song-spacer';
+                    b35Grid.appendChild(spacer);
+                }
+            });
+            
+            // 填充B15区域
+            const b15Grid = document.getElementById('b15Grid');
+            b15Grid.innerHTML = '';
+            
+            testData.dx.forEach((song, index) => {
+                const cardElement = createSongCard(song, `dx-${index}`);
+                b15Grid.appendChild(cardElement);
+                
+                // 添加间距（除了每行最后一个和最后一个卡片）
+                if ((index + 1) % 5 !== 0 && index < testData.dx.length - 1) {
+                    const spacer = document.createElement('div');
+                    spacer.className = 'song-spacer';
+                    b15Grid.appendChild(spacer);
+                }
+            });
+        }
+
+        // 填充用户信息
+        function fillUserInfo() {
+            document.getElementById('userName2').textContent = testData.nickname;
+        }
+
+        // 开发版调试功能
+        function toggleGrid() {
+            const grid = document.getElementById('debugGrid');
+            grid.style.display = grid.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function toggleBorders() {
+            const container = document.getElementById('container');
+            container.classList.toggle('debug-borders');
+        }
+
+        function toggleOverlay() {
+            const overlay = document.getElementById('debugOverlay');
+            overlay.style.display = overlay.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function fillTestData() {
+            // 重新填充所有测试数据
+            fillProfileImages();
+            fillRatingDigits();
+            fillUserInfo();
+            fillSongData();
+            console.log('测试数据已重新填充！');
+        }
+
+        // 随机化测试数据
+        function randomizeData() {
+            // 随机化Rating
+            testData.rating = Math.floor(Math.random() * 5000) + 10000;
+            
+            // 随机化歌曲数据
+            testData.standard.forEach(song => {
+                song.achievements = (Math.random() * 5 + 95).toFixed(4);
+                song.dx_score = Math.floor(Math.random() * 500) + 2500;
+                song.dx_rating = Math.floor(Math.random() * 100) + 200;
+                song.rate = ['SSS', 'SS', 'S', 'AAA', 'AA'][Math.floor(Math.random() * 5)];
+                song.fc = Math.random() > 0.7;
+                song.fs = Math.random() > 0.8;
+            });
+            
+            testData.dx.forEach(song => {
+                song.achievements = (Math.random() * 2 + 98).toFixed(4);
+                song.dx_score = Math.floor(Math.random() * 400) + 2700;
+                song.dx_rating = Math.floor(Math.random() * 80) + 280;
+                song.rate = ['SSS', 'SS', 'S', 'AAA', 'AA'][Math.floor(Math.random() * 5)];
+                song.fc = Math.random() > 0.6;
+                song.fs = Math.random() > 0.7;
+            });
+            
+            fillTestData();
+        }
+
+        // 键盘快捷键
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey) {
+                switch(e.key) {
+                    case 'g':
+                        e.preventDefault();
+                        toggleGrid();
+                        break;
+                    case 'b':
+                        e.preventDefault();
+                        toggleBorders();
+                        break;
+                    case 'o':
+                        e.preventDefault();
+                        toggleOverlay();
+                        break;
+                    case 'r':
+                        e.preventDefault();
+                        randomizeData();
+                        break;
+                }
+            }
+        });
+
+        // 页面加载完成后初始化
+        window.addEventListener('load', function() {
+            console.log('B50开发版模板加载完成（新flexbox布局）');
+            console.log('快捷键: Ctrl+G=网格, Ctrl+B=边框, Ctrl+O=辅助线, Ctrl+R=随机数据');
+            
+            // 填充初始数据
+            fillProfileImages();
+            fillRatingDigits();
+            fillUserInfo();
+            fillSongData();
+            
+            // 显示加载完成提示
+            setTimeout(() => {
+                console.log('测试数据已加载:', {
+                    standard: testData.standard.length + '首',
+                    dx: testData.dx.length + '首',
+                    rating: testData.rating,
+                    layout: 'flexbox布局',
+                    placeholderImages: '✓ 已启用'
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>
